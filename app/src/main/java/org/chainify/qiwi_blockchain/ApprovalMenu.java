@@ -1,6 +1,7 @@
 package org.chainify.qiwi_blockchain;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,8 +13,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ApprovalMenu extends Fragment {
     Button generateKeyBtn;
@@ -87,6 +105,25 @@ public class ApprovalMenu extends Fragment {
             }
         });
 
+        verifyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+//                    new RequestTask().execute();
+                    String pkc = pk.getText().toString();
+                    String psc = passportEdit.getText().toString();
+                    if (pkc.isEmpty() || psc.isEmpty()) {
+                        Toast.makeText(getContext(),"You should provide all required data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        new DownloadWebpageTask().execute(pk.getText().toString(), passportEdit.getText().toString());
+                    }
+                } catch (Exception e) {
+
+                }
+
+            }
+        });
+
         updateVisibility(ctx);
         updateKeys(ctx);
 
@@ -100,6 +137,56 @@ public class ApprovalMenu extends Fragment {
         SaveSharedPreference.setKeys(context, pair, password);
     }
 
+
+
+    private class DownloadWebpageTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                return (String)downloadUrl((String)urls[0], (String)urls[1]);
+            } catch (IOException e) {
+                return "error";
+            }
+        }
+
+        private String downloadUrl(String publicKey, String passportData) throws IOException {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://10.20.3.54:3500/api/v1/sber");
+
+            try {
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("passport", passportData));
+                nameValuePairs.add(new BasicNameValuePair("publicKey", publicKey));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+                    @Override
+                    public String handleResponse(
+                            final HttpResponse response) throws ClientProtocolException, IOException {
+                        int status = response.getStatusLine().getStatusCode();
+                        if (status >= 200 && status <= 201) {
+                            HttpEntity entity = response.getEntity();
+                            return entity != null ? EntityUtils.toString(entity) : null;
+                        } else {
+                            throw new ClientProtocolException("Unexpected response status: " + status);
+                        }
+                    }
+
+                };
+                String responseBody = httpclient.execute(httppost, responseHandler);
+                System.out.println("----------------------------------------");
+                System.out.println(responseBody);
+
+                return responseBody;
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "error";
+        }
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

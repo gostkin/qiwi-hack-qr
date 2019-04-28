@@ -41,8 +41,6 @@ public class LoginActivity extends AppCompatActivity {
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Make form visible
-
                 userLogin(password.getText().toString());
             }
         });

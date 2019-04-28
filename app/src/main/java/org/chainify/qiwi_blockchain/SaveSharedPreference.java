@@ -4,6 +4,7 @@ package org.chainify.qiwi_blockchain;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 
 import org.bouncycastle.jcajce.provider.digest.Blake2b;
 
@@ -21,7 +22,7 @@ public class SaveSharedPreference {
         SharedPreferences.Editor editor = getPreferences(context).edit();
 
         editor.remove(ENCRYPTED_PK);
-        editor.putString(ENCRYPTED_PK, new String(pair.getPub()));
+        editor.putString(ENCRYPTED_PK, Base64.encodeToString(pair.getPub(), 0));
         editor.remove(ENCRYPTED_SK);
         editor.putString(ENCRYPTED_SK, pair.getPriv().toString());
         editor.remove(PASSWORD_HASH);
