@@ -47,6 +47,7 @@ import javax.crypto.SecretKey;
 public class ApprovalMenu extends Fragment {
     Button generateKeyBtn;
     Button verifyBtn;
+    Button putCypherBtn;
 
     TextView verified;
 
@@ -60,18 +61,26 @@ public class ApprovalMenu extends Fragment {
 
     private void updateVisibility(Context ctx) {
         verified.setVisibility(View.INVISIBLE);
+        verifyBtn.setActivated(false);
+        putCypherBtn.setActivated(false);
         if (!SaveSharedPreference.getPasswordHash(ctx).isEmpty()) {
             generationLayout.setVisibility(View.INVISIBLE);
+            verifyBtn.setActivated(true);
         } else {
             verificationLayout.setVisibility(View.INVISIBLE);
             passportLayout.setVisibility(View.INVISIBLE);
         }
 
-        if (SaveSharedPreference.getVerified(ctx)) {
+        if (SaveSharedPreference.getFinished(ctx)) {
             passportLayout.setVisibility(View.INVISIBLE);
             verified.setVisibility(View.VISIBLE);
+
         } else {
             passportLayout.setVisibility(View.VISIBLE);
+            if (SaveSharedPreference.getVerified(ctx)) {
+                verifyBtn.setActivated(false);
+                putCypherBtn.setActivated(true);
+            }
         }
     }
 
@@ -92,7 +101,6 @@ public class ApprovalMenu extends Fragment {
         final Context ctx = thisView.getContext();
 
 
-        System.out.println("LOL" + SaveSharedPreference.getEncryptedPK(ctx) + SaveSharedPreference.getEncryptedSK(ctx));
         generationLayout = thisView.findViewById(R.id.generation_layout);
 
         verificationLayout = thisView.findViewById(R.id.verification_layout);
@@ -126,6 +134,7 @@ public class ApprovalMenu extends Fragment {
             public void onClick(View v) {
                 try {
 //                    new RequestTask().execute();
+                    Context ctx = getContext();
                     String pkc = pk.getText().toString();
                     String psc = passportEdit.getText().toString();
                     if (pkc.isEmpty() || psc.isEmpty()) {
@@ -136,46 +145,55 @@ public class ApprovalMenu extends Fragment {
                         if (res.startsWith("error")) {
                             Toast.makeText(getContext(),"Verification failed: " + res, Toast.LENGTH_SHORT).show();
                         } else {
-                            //some checks and verification
-
-                            // get data temp key
-
                             JSONObject obj = new JSONObject(res);
                             String id = "";
                             try {
                                 id = obj.getString("id");
+                                SaveSharedPreference.setVerified(ctx, true, id);
+                                updateVisibility(ctx);
                             } catch (Exception e) {
                                 Toast.makeText(getContext(),"Verification failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-
-                            // encrypt sk with temp key, send encrypted sk and temp key
-
-                            String sk = SaveSharedPreference.getEncryptedSK(ctx);
-                            // Generating IV.
-                            byte[] IV = "WRNlywK6BCRpCaJI".getBytes();
-                            String key = "fZhcWmVq0eFG9mZaoCvPKebJfuoCsBgo";
-
-                            System.out.println("Original Text  : "+sk);
-
-                            byte[] cipherText = AESEncryption.encrypt(sk.getBytes(),key.getBytes(), IV);
-                            String encrypted = Base64.encodeToString(cipherText, 0);
-                            System.out.println("Original Text  : "+sk);
-
-                            System.out.println("Encrypted Text : "+ encrypted);
-
-                            String decryptedText = AESEncryption.decrypt(cipherText,key.getBytes(), IV);
-                            System.out.println("Decrypted Text : "+decryptedText);
-
-                            AsyncTask finalizing = new PutInfo().execute(id, encrypted);
-                            Boolean final_res = ((PutInfo) finalizing).get();
-                            if (!final_res) {
-                                Toast.makeText(getContext(),"Verification failed", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(),"Verification success", Toast.LENGTH_SHORT).show();
-                                SaveSharedPreference.setVerified(v.getContext(), true);
-                                updateVisibility(v.getContext());
-                            }
                         }
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(getContext(),"Verification failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        putCypherBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    // encrypt sk with temp key, send encrypted sk and temp key
+                    Context ctx = getContext();
+
+                    String sk = SaveSharedPreference.getEncryptedSK(ctx);
+                    // Generating IV.
+                    byte[] IV = "WRNlywK6BCRpCaJI".getBytes();
+                    String key = "fZhcWmVq0eFG9mZaoCvPKebJfuoCsBgo";
+
+                    System.out.println("Original Text  : "+sk);
+
+                    byte[] cipherText = AESEncryption.encrypt(sk.getBytes(),key.getBytes(), IV);
+                    String encrypted = Base64.encodeToString(cipherText, 0);
+                    System.out.println("Original Text  : "+sk);
+
+                    System.out.println("Encrypted Text : "+ encrypted);
+
+                    String decryptedText = AESEncryption.decrypt(cipherText,key.getBytes(), IV);
+                    System.out.println("Decrypted Text : "+decryptedText);
+
+                    AsyncTask finalizing = new PutInfo().execute(SaveSharedPreference.getID(ctx), encrypted);
+                    String final_res = ((PutInfo) finalizing).get();
+                    if (final_res.startsWith("error")) {
+                        Toast.makeText(getContext(),"Verification failed", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(),"Verification success", Toast.LENGTH_SHORT).show();
+                        SaveSharedPreference.setFinished(v.getContext(), true);
+                        updateVisibility(ctx);
                     }
                 } catch (Exception e) {
                     Toast.makeText(getContext(),"Verification failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -206,7 +224,7 @@ public class ApprovalMenu extends Fragment {
             try {
                 return (String)downloadUrl((String)urls[0], (String)urls[1]);
             } catch (IOException e) {
-                return "error";
+                return "error" + e.getMessage();
             }
         }
 
@@ -248,18 +266,18 @@ public class ApprovalMenu extends Fragment {
         }
     }
 
-    private class PutInfo extends AsyncTask<String, Void, Boolean> {
+    private class PutInfo extends AsyncTask<String, Void, String> {
 
         @Override
-        protected Boolean doInBackground(String... urls) {
+        protected String doInBackground(String... urls) {
             try {
-                return (Boolean)downloadUrl((String)urls[0], (String)urls[1]);
+                return (String)downloadUrl((String)urls[0], (String)urls[1]);
             } catch (IOException e) {
-                return false;
+                return e.getMessage();
             }
         }
 
-        private Boolean downloadUrl(String id, String encrypted) throws IOException {
+        private String downloadUrl(String id, String encrypted) throws IOException {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPut httpPut = new HttpPut("http://10.20.3.54:3500/api/v1/sber_cypher");
 
@@ -269,29 +287,27 @@ public class ApprovalMenu extends Fragment {
                 nameValuePairs.add(new BasicNameValuePair("cypherText", encrypted));
                 httpPut.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-                ResponseHandler<Boolean> responseHandler = new ResponseHandler<Boolean>() {
+                ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
                     @Override
-                    public Boolean handleResponse(
+                    public String handleResponse(
                             final HttpResponse response) throws ClientProtocolException, IOException {
                         int status = response.getStatusLine().getStatusCode();
                         if (status >= 200 && status <= 201) {
                             HttpEntity entity = response.getEntity();
-                            return entity != null;
+                            return entity != null ? EntityUtils.toString(entity) : null;
                         } else {
                             throw new ClientProtocolException("Unexpected response status: " + status);
                         }
                     }
 
                 };
-                Boolean responseBody = httpclient.execute(httpPut, responseHandler);
-
-                return responseBody;
+                return httpclient.execute(httpPut, responseHandler);
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return false;
+            return "error";
         }
     }
 

@@ -8,5 +8,7 @@ public class PreferencesUtility {
 
     public static final String PASSWORD_HASH = "password_hash";
 
+    public static final String UID = "uid";
+    public static final String REG_FINISHED = "reg_finished";
     public static final String IDENTITY_VERIFIED = "identity_verified";
 }

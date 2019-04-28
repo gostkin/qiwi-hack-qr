@@ -53,14 +53,38 @@ public class SaveSharedPreference {
         return getPreferences(context).getString(ENCRYPTED_SK, "");
     }
 
-    public static void setVerified(Context context, boolean status) {
+
+    public static String getID(Context context) {
+        return getPreferences(context).getString(UID, "");
+    }
+
+    public static void setVerified(Context context, boolean status, String id) {
         SharedPreferences.Editor editor = getPreferences(context).edit();
         editor.putBoolean(IDENTITY_VERIFIED, status);
+        if (status) {
+            editor.putString(UID, id);
+        } else {
+            editor.remove(UID);
+        }
         editor.apply();
         editor.commit();
     }
 
+
     public static boolean getVerified(Context context) {
         return getPreferences(context).getBoolean(IDENTITY_VERIFIED, false);
     }
+
+    public static void setFinished(Context context, boolean status) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putBoolean(REG_FINISHED, status);
+        editor.apply();
+        editor.commit();
+    }
+
+
+    public static boolean getFinished(Context context) {
+        return getPreferences(context).getBoolean(REG_FINISHED, false);
+    }
+
 }
