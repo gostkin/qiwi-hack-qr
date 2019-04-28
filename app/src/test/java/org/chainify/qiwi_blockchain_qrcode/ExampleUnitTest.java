@@ -1,4 +1,4 @@
-package org.chainify.qiwi_blockchain;
+package org.chainify.qiwi_blockchain_qrcode;
 
 import org.junit.Test;
 

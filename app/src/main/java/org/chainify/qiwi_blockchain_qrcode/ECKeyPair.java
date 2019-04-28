@@ -1,6 +1,5 @@
-package org.chainify.qiwi_blockchain;
+package org.chainify.qiwi_blockchain_qrcode;
 
-import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.ECNamedCurveTable;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -12,7 +11,6 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
-import java.security.Key;
 import java.security.SecureRandom;
 
 public class ECKeyPair {

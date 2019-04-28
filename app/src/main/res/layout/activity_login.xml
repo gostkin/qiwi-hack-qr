@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/loginForm"
     android:visibility="invisible"
-    tools:context="org.chainify.qiwi_blockchain.LoginActivity">
+    tools:context="org.chainify.qiwi_blockchain_qrcode.LoginActivity">
 
     <TextView
         android:id="@+id/password"

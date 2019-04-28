@@ -1,4 +1,4 @@
-package org.chainify.qiwi_blockchain;
+package org.chainify.qiwi_blockchain_qrcode;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("org.chainify.qiwi_blockchain", appContext.getPackageName());
+        assertEquals("org.chainify.qiwi_blockchain_qrcode", appContext.getPackageName());
     }
 }

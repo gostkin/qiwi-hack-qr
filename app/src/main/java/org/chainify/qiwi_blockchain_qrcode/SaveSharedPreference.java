@@ -1,4 +1,4 @@
-package org.chainify.qiwi_blockchain;
+package org.chainify.qiwi_blockchain_qrcode;
 
 
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.util.Base64;
 
 import org.bouncycastle.jcajce.provider.digest.Blake2b;
 
-import static org.chainify.qiwi_blockchain.PreferencesUtility.*;
+import static org.chainify.qiwi_blockchain_qrcode.PreferencesUtility.*;
 
 
 public class SaveSharedPreference {
@@ -89,4 +89,16 @@ public class SaveSharedPreference {
         return getPreferences(context).getBoolean(REG_FINISHED, false);
     }
 
+    public static String toHex(byte[] bytes) {
+        return Base64.encodeToString(bytes, 0);
+    }
+
+    public static byte[] blake2b256Digest(byte[]... data) {
+        Blake2b.Blake2b256 digest = new Blake2b.Blake2b256();
+        digest.reset();
+        for (byte[] bytes : data) {
+            digest.update(bytes);
+        }
+        return digest.digest();
+    }
 }

@@ -1,4 +1,4 @@
-package org.chainify.qiwi_blockchain;
+package org.chainify.qiwi_blockchain_qrcode;
 
 public class PreferencesUtility {
 

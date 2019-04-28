@@ -23,18 +23,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/menu_pk"
-            android:textSize="@dimen/item_text_height"/>
-
-        <EditText
-            android:id="@+id/pk_edit_restored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:editable="false" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:text="@string/menu_sk"
             android:textSize="@dimen/item_text_height"/>
 
@@ -45,6 +33,20 @@
             android:editable="false"
             />
 
+
+
+        <TextView
+            android:id="@+id/scan_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scan_results"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/scan_results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"/>
 
         <LinearLayout
             android:id="@+id/passport_layout_restored"
@@ -60,10 +62,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/menu_passport"
+                    android:text="@string/password"
                     android:textSize="@dimen/item_text_height"/>
                 <EditText
-                    android:id="@+id/passport_edit_restored"
+                    android:id="@+id/password_restored"
+                    android:inputType="textPassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </LinearLayout>
