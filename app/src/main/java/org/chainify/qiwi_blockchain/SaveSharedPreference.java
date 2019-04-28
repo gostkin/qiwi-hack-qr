@@ -21,18 +21,27 @@ public class SaveSharedPreference {
     public static void setKeys(Context context, ECKeyPair pair, String password) {
         SharedPreferences.Editor editor = getPreferences(context).edit();
 
-        editor.remove(ENCRYPTED_PK);
         editor.putString(ENCRYPTED_PK, Base64.encodeToString(pair.getPub(), 0));
-        editor.remove(ENCRYPTED_SK);
         editor.putString(ENCRYPTED_SK, pair.getPriv().toString());
-        editor.remove(PASSWORD_HASH);
 
         editor.putString(PASSWORD_HASH, password);
         editor.apply();
         editor.commit();
     }
 
-    public static String getPasswordHash(Context context) {
+    public static void resetKeys(Context context) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+
+        editor.remove(ENCRYPTED_PK);
+        editor.remove(ENCRYPTED_SK);
+        editor.remove(PASSWORD_HASH);
+        editor.remove(IDENTITY_VERIFIED);
+
+        editor.apply();
+        editor.commit();
+    }
+
+        public static String getPasswordHash(Context context) {
         return getPreferences(context).getString(PASSWORD_HASH, "");
     }
 

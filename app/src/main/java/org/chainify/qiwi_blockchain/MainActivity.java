@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_reset) {
+            SaveSharedPreference.resetKeys(getApplicationContext());
             return true;
         }
 
@@ -90,9 +91,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_menu2:
                 fragment = new RecoveryMenu();
-                break;
-            case R.id.nav_menu3:
-                fragment = new Menu3();
                 break;
         }
 

@@ -5,15 +5,11 @@
         <item
             android:id="@+id/nav_menu1"
             android:icon="@mipmap/ic_launcher"
-            android:title="Menu 1" />
+            android:title="Approval menu" />
         <item
             android:id="@+id/nav_menu2"
             android:icon="@mipmap/ic_launcher"
-            android:title="Menu 2" />
-        <item
-            android:id="@+id/nav_menu3"
-            android:icon="@mipmap/ic_launcher"
-            android:title="Menu 3" />
+            android:title="Recovery menu" />
 
     </group>
 
