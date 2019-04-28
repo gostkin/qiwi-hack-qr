@@ -36,6 +36,8 @@ public class SaveSharedPreference {
         editor.remove(ENCRYPTED_SK);
         editor.remove(PASSWORD_HASH);
         editor.remove(IDENTITY_VERIFIED);
+        editor.remove(REG_FINISHED);
+        editor.remove(UID);
 
         editor.apply();
         editor.commit();

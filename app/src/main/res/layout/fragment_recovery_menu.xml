@@ -3,13 +3,81 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <TextView
+        android:id="@+id/restored_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Menu 2"
-        android:id="@+id/textView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/item_text_height"
+        android:text="@string/restored" />
+    <LinearLayout
+        android:id="@+id/restored_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/menu_pk"
+            android:textSize="@dimen/item_text_height"/>
 
+        <EditText
+            android:id="@+id/pk_edit_restored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/menu_sk"
+            android:textSize="@dimen/item_text_height"/>
+
+        <EditText
+            android:id="@+id/sk_edit_restored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            />
+
+
+        <LinearLayout
+            android:id="@+id/passport_layout_restored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/menu_passport"
+                    android:textSize="@dimen/item_text_height"/>
+                <EditText
+                    android:id="@+id/passport_edit_restored"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/restore_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/verify" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

@@ -61,11 +61,11 @@ public class ApprovalMenu extends Fragment {
 
     private void updateVisibility(Context ctx) {
         verified.setVisibility(View.INVISIBLE);
-        verifyBtn.setActivated(false);
-        putCypherBtn.setActivated(false);
         if (!SaveSharedPreference.getPasswordHash(ctx).isEmpty()) {
             generationLayout.setVisibility(View.INVISIBLE);
-            verifyBtn.setActivated(true);
+            verifyBtn.setClickable(true);
+
+            putCypherBtn.setClickable(false);
         } else {
             verificationLayout.setVisibility(View.INVISIBLE);
             passportLayout.setVisibility(View.INVISIBLE);
@@ -75,11 +75,13 @@ public class ApprovalMenu extends Fragment {
             passportLayout.setVisibility(View.INVISIBLE);
             verified.setVisibility(View.VISIBLE);
 
+            verifyBtn.setClickable(false);
+            putCypherBtn.setClickable(false);
         } else {
             passportLayout.setVisibility(View.VISIBLE);
             if (SaveSharedPreference.getVerified(ctx)) {
-                verifyBtn.setActivated(false);
-                putCypherBtn.setActivated(true);
+                verifyBtn.setClickable(false);
+                putCypherBtn.setClickable(true);
             }
         }
     }
@@ -112,6 +114,7 @@ public class ApprovalMenu extends Fragment {
         passwordEdit = thisView.findViewById(R.id.password_ver_edit);
         passportEdit = thisView.findViewById(R.id.passport_edit);
         verifyBtn = thisView.findViewById(R.id.verify_btn);
+        putCypherBtn = thisView.findViewById(R.id.put_cypher_btn);
 
         pk = thisView.findViewById(R.id.pk_edit);
         sk = thisView.findViewById(R.id.sk_edit);
@@ -189,7 +192,7 @@ public class ApprovalMenu extends Fragment {
                     AsyncTask finalizing = new PutInfo().execute(SaveSharedPreference.getID(ctx), encrypted);
                     String final_res = ((PutInfo) finalizing).get();
                     if (final_res.startsWith("error")) {
-                        Toast.makeText(getContext(),"Verification failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),"Verification failed" + final_res, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getContext(),"Verification success", Toast.LENGTH_SHORT).show();
                         SaveSharedPreference.setFinished(v.getContext(), true);
@@ -259,10 +262,11 @@ public class ApprovalMenu extends Fragment {
                 return responseBody;
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
+                return "error" + e.getMessage();
             } catch (IOException e) {
                 e.printStackTrace();
+                return "error" + e.getMessage();
             }
-            return "error";
         }
     }
 
@@ -295,6 +299,9 @@ public class ApprovalMenu extends Fragment {
                         if (status >= 200 && status <= 201) {
                             HttpEntity entity = response.getEntity();
                             return entity != null ? EntityUtils.toString(entity) : null;
+                        } else if (status == 400) {
+                            HttpEntity entity = response.getEntity();
+                            throw new ClientProtocolException("400 status: " + EntityUtils.toString(entity));
                         } else {
                             throw new ClientProtocolException("Unexpected response status: " + status);
                         }
@@ -304,10 +311,11 @@ public class ApprovalMenu extends Fragment {
                 return httpclient.execute(httpPut, responseHandler);
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
+                return "error" + e.getMessage();
             } catch (IOException e) {
                 e.printStackTrace();
+                return "error" + e.getMessage();
             }
-            return "error";
         }
     }
 

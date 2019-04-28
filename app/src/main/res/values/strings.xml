@@ -23,6 +23,8 @@
     <string name="password">Password</string>
     <string name="password_hint">password</string>
     <string name="finish">Finish</string>
+    <string name="reset_wallet">Reset wallet</string>
+    <string name="restored">Restored</string>
 
 
 </resources>
