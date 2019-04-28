@@ -15,7 +15,7 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText username,password;
+    EditText password;
     Button submitBtn;
     RelativeLayout loginForm;
 
@@ -24,13 +24,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        username = findViewById(R.id.usernameText);
-        password = findViewById(R.id.passwordText);
         submitBtn = findViewById(R.id.submit);
         loginForm = findViewById(R.id.loginForm);
 
         // Check if UserResponse is Already Logged In
-        if(SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
+        if(SaveSharedPreference.getPasswordHash(getApplicationContext()).isEmpty()) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         } else {
@@ -42,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Make form visible
 
-                userLogin(username.getText().toString(), password.getText().toString());
+                userLogin(password.getText().toString());
             }
         });
     }
@@ -50,13 +48,18 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Login API call
      * TODO: Please modify according to your need it is just an example
-     * @param username
      * @param password
      */
-    private void userLogin(String username, String password) {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK |FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+    private void userLogin(String password) {
+        if (password.equals(SaveSharedPreference.getPasswordHash(getApplicationContext()))) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK |FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } else {
+            Toast.makeText(getApplicationContext(), "Credentials are not Valid.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
 /*
         Retrofit retrofit = RetrofitClient.getClient();
         final LoginServices loginServices = retrofit.create(LoginServices.class);

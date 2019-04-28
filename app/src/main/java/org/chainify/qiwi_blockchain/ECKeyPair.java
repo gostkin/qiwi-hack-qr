@@ -45,4 +45,11 @@ public class ECKeyPair {
         return k;
     }
 
+    public BigInteger getPriv() {
+        return priv;
+    }
+
+    public byte[] getPub() {
+        return pub;
+    }
 }

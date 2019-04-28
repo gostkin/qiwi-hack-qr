@@ -1,5 +1,6 @@
 package org.chainify.qiwi_blockchain;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
 
 public class ApprovalMenu extends Fragment {
     Button generateKeyBtn;
@@ -26,7 +29,7 @@ public class ApprovalMenu extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View thisView = getView();
+        final View thisView = getView();
         generateKeyBtn = thisView.findViewById(R.id.generate_btn);
         passwordEdit = thisView.findViewById(R.id.password_ver_edit);
         generationLayout = thisView.findViewById(R.id.generation_layout);
@@ -42,12 +45,14 @@ public class ApprovalMenu extends Fragment {
         generateKeyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                generateAndSaveKeys(passportEdit.getText().toString());
+                Context ctx = thisView.getContext();
+                generateAndSaveKeys(ctx, passportEdit.getText().toString());
 
                 generationLayout.setVisibility(View.INVISIBLE);
                 verificationLayout.setVisibility(View.VISIBLE);
 
-                // update pk and sk in view
+                pk.setText(SaveSharedPreference.getEncryptedPK(ctx));
+                sk.setText(SaveSharedPreference.getEncryptedSK(ctx));
             }
         });
         //returning our layout file
@@ -55,8 +60,9 @@ public class ApprovalMenu extends Fragment {
         return inflater.inflate(R.layout.fragment_approval_menu, container, false);
     }
 
-    public void generateAndSaveKeys(String password) {
-
+    public void generateAndSaveKeys(Context context, String password) {
+        ECKeyPair pair = ECKeyPair.createNew(false);
+        SaveSharedPreference.setKeys(context, pair, password);
     }
 
 

@@ -5,11 +5,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.bouncycastle.jcajce.provider.digest.Blake2b;
+
 import static org.chainify.qiwi_blockchain.PreferencesUtility.*;
 
-/**
- * Created by anuragdhunna on 13/2/18.
- */
 
 public class SaveSharedPreference {
 
@@ -17,23 +16,25 @@ public class SaveSharedPreference {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    /**
-     * Set the Login Status
-     * @param context
-     * @param loggedIn
-     */
-    public static void setLoggedIn(Context context, boolean loggedIn) {
+    // TODO: make adequate encryption
+    public static void setKeys(Context context, ECKeyPair pair, String password) {
         SharedPreferences.Editor editor = getPreferences(context).edit();
-        editor.putBoolean(LOGGED_IN_PREF, loggedIn);
+
+        editor.putString(ENCRYPTED_PK, new String(pair.getPub()));
+        editor.putString(ENCRYPTED_SK, pair.getPriv().toString());
+        editor.putString(PASSWORD_HASH, password);
         editor.apply();
     }
 
-    /**
-     * Get the Login Status
-     * @param context
-     * @return boolean: login status
-     */
-    public static boolean getLoggedStatus(Context context) {
-        return getPreferences(context).getBoolean(LOGGED_IN_PREF, false);
+    public static String getPasswordHash(Context context) {
+        return getPreferences(context).getString(PASSWORD_HASH, "");
+    }
+
+    public static String getEncryptedPK(Context context) {
+        return getPreferences(context).getString(ENCRYPTED_PK, "");
+    }
+
+    public static String getEncryptedSK(Context context) {
+        return getPreferences(context).getString(ENCRYPTED_SK, "");
     }
 }
