@@ -2,6 +2,7 @@ package org.chainify.qiwi_blockchain;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,16 +27,47 @@ public class ApprovalMenu extends Fragment {
 
     LinearLayout verificationLayout, passportLayout;
 
+    private void updateVisibility(Context ctx) {
+        if (!SaveSharedPreference.getPasswordHash(ctx).isEmpty()) {
+            generationLayout.setVisibility(View.INVISIBLE);
+        } else {
+            verificationLayout.setVisibility(View.INVISIBLE);
+            passportLayout.setVisibility(View.INVISIBLE);
+        }
+
+        if (SaveSharedPreference.getVerified(ctx)) {
+            passportLayout.setVisibility(View.INVISIBLE);
+        } else {
+            passportLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateKeys(Context ctx) {
+        if (!SaveSharedPreference.getPasswordHash(ctx).isEmpty()) {
+            pk.setText(SaveSharedPreference.getEncryptedPK(ctx));
+            sk.setText(SaveSharedPreference.getEncryptedSK(ctx));
+        }
+    }
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View thisView = getView();
-        generateKeyBtn = thisView.findViewById(R.id.generate_btn);
-        passwordEdit = thisView.findViewById(R.id.password_ver_edit);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (container == null) {
+            return null;
+        }
+        RelativeLayout thisView = (RelativeLayout) inflater.inflate(R.layout.fragment_approval_menu, container, false);
+        Context ctx = thisView.getContext();
+
+
+        System.out.println("LOL" + SaveSharedPreference.getEncryptedPK(ctx) + SaveSharedPreference.getEncryptedSK(ctx));
         generationLayout = thisView.findViewById(R.id.generation_layout);
 
         verificationLayout = thisView.findViewById(R.id.verification_layout);
         passportLayout = thisView.findViewById(R.id.passport_layout);
+
+        generateKeyBtn = thisView.findViewById(R.id.generate_btn);
+
+        passwordEdit = thisView.findViewById(R.id.password_ver_edit);
         passportEdit = thisView.findViewById(R.id.passport_edit);
         verifyBtn = thisView.findViewById(R.id.verify_btn);
 
@@ -45,19 +77,22 @@ public class ApprovalMenu extends Fragment {
         generateKeyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context ctx = thisView.getContext();
-                generateAndSaveKeys(ctx, passportEdit.getText().toString());
+                Context ctx = v.getContext();
+                generateAndSaveKeys(ctx, passwordEdit.getText().toString());
 
                 generationLayout.setVisibility(View.INVISIBLE);
                 verificationLayout.setVisibility(View.VISIBLE);
 
-                pk.setText(SaveSharedPreference.getEncryptedPK(ctx));
-                sk.setText(SaveSharedPreference.getEncryptedSK(ctx));
+                updateKeys(ctx);
             }
         });
+
+        updateVisibility(ctx);
+        updateKeys(ctx);
+
         //returning our layout file
         //change R.layout.yourlayoutfilename for each of your fragments
-        return inflater.inflate(R.layout.fragment_approval_menu, container, false);
+        return thisView;
     }
 
     public void generateAndSaveKeys(Context context, String password) {

@@ -7,4 +7,6 @@ public class PreferencesUtility {
     public static final String ENCRYPTED_SK = "encrypted_sk";
 
     public static final String PASSWORD_HASH = "password_hash";
+
+    public static final String IDENTITY_VERIFIED = "identity_verified";
 }

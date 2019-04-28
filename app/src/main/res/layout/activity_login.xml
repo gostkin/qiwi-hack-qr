@@ -8,7 +8,7 @@
     tools:context="org.chainify.qiwi_blockchain.LoginActivity">
 
     <TextView
-        android:id="@+id/usernameTextView"
+        android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -18,45 +18,21 @@
         android:layout_marginLeft="35dp"
         android:layout_marginStart="35dp"
         android:layout_marginTop="71dp"
-        android:text="Username" />
-
-    <EditText
-        android:id="@+id/usernameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/usernameTextView"
-        android:layout_marginLeft="37dp"
-        android:layout_marginStart="37dp"
-        android:layout_toEndOf="@+id/usernameTextView"
-        android:layout_toRightOf="@+id/usernameTextView"
-        android:inputType="textNoSuggestions"
-        android:background="@null"
-        android:ems="10"
-        android:hint="username" />
-
-    <TextView
-        android:id="@+id/password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/usernameTextView"
-        android:layout_alignStart="@+id/usernameTextView"
-        android:layout_below="@+id/usernameTextView"
-        android:layout_marginTop="40dp"
-        android:textColor="@android:color/black"
-        android:text="Password"
-        android:textSize="18dp" />
+        android:text="@string/password" />
 
     <EditText
         android:id="@+id/passwordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/password"
-        android:layout_alignLeft="@+id/usernameText"
-        android:layout_alignStart="@+id/usernameText"
+        android:layout_marginLeft="37dp"
+        android:layout_marginStart="37dp"
+        android:layout_toEndOf="@+id/password"
+        android:layout_toRightOf="@+id/password"
+        android:inputType="textPassword"
         android:background="@null"
         android:ems="10"
-        android:inputType="textPassword"
-        android:hint="password" />
+        android:hint="@string/password_hint" />
 
     <Button
         android:id="@+id/submit"

@@ -11,6 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
+
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 public class LoginActivity extends AppCompatActivity {
@@ -24,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        password = findViewById(R.id.passwordText);
         submitBtn = findViewById(R.id.submit);
         loginForm = findViewById(R.id.loginForm);
 
