@@ -13,4 +13,15 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+    <string name="menu_pk">Public key</string>
+    <string name="menu_sk">Secret key</string>
+    <string name="menu_passport">Passport data</string>
+    <string name="generate_key">Generate key pair</string>
+    <string name="verify">Verify</string>
+    <string name="verified">Verified</string>
+    <string name="password">Password</string>
+    <string name="password_hint">password</string>
+
+
 </resources>
